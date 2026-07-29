@@ -17,6 +17,7 @@
 #import "MinecraftResourceUtils.h"
 #import "PLProfiles.h"
 #import "SurfaceViewController.h"
+#import "TouchControllerUtils.h"
 #import "TrackedTextField.h"
 #import "UIKit+hook.h"
 #import "ios_uikit_bridge.h"
@@ -103,6 +104,8 @@ static GameSurfaceView* pojavWindow;
         }
     }
     [displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSRunLoopCommonModes];
+
+    [TouchControllerUtils initialize];
 
     CGFloat screenScale = UIScreen.mainScreen.scale;
 
@@ -980,6 +983,7 @@ int touchesMovedCount;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
+    [TouchControllerUtils processTouchesBegan:touches inView:self.touchView];
     int i = 0;
     for (UITouch *touch in touches) {
         if (touch.type == UITouchTypeIndirectPointer) {
@@ -1004,6 +1008,7 @@ int touchesMovedCount;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
+    [TouchControllerUtils processTouchesMoved:touches inView:self.touchView];
 
     for (UITouch *touch in touches) {
         if (touch.type == UITouchTypeIndirectPointer) {
@@ -1037,6 +1042,7 @@ int touchesMovedCount;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
+    [TouchControllerUtils processTouchesEnded:touches inView:self.touchView];
     [self touchesEndedGlobal:touches withEvent:event];
 }
 
@@ -1044,6 +1050,7 @@ int touchesMovedCount;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
+    [TouchControllerUtils processTouchesCancelled:touches inView:self.touchView];
     [self touchesEndedGlobal:touches withEvent:event];
 }
 

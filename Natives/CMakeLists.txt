@@ -170,6 +170,7 @@ add_executable(AngelAuraAmethyst
   SurfaceViewController+ExternalDisplay.m
   SurfaceViewController+LogView.m
   SurfaceViewController+Navigation.m
+  TouchControllerUtils.m
   TrackedTextField.m
   egl_bridge.m
   input_bridge_v3.m
@@ -201,6 +202,7 @@ target_link_libraries(AngelAuraAmethyst
   "-framework UniformTypeIdentifiers"
   "-framework UnzipKit"
   "-framework WebKit"
+  "-framework touchcontroller_proxy"
   "-weak_framework SafariServices"
 )
 set_target_properties(AngelAuraAmethyst PROPERTIES

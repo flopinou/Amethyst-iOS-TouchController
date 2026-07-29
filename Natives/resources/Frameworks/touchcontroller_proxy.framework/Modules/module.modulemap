@@ -1,0 +1,5 @@
+framework module touchcontroller_proxy {
+  umbrella header "touchcontroller_proxy.h"
+  export *
+  module * { export * }
+}
