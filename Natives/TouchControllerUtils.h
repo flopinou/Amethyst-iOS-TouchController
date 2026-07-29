@@ -4,7 +4,7 @@
 
 @interface TouchControllerUtils : NSObject
 
-+ (void)initialize;
++ (void)setup;
 + (BOOL)isAvailable;
 + (void)processTouchesBegan:(NSSet<UITouch *> *)touches inView:(UIView *)view;
 + (void)processTouchesMoved:(NSSet<UITouch *> *)touches inView:(UIView *)view;

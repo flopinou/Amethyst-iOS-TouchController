@@ -204,7 +204,7 @@ target_link_libraries(AngelAuraAmethyst
   "-framework UnzipKit"
   "-framework WebKit"
   "-F'${CMAKE_CURRENT_LIST_DIR}/external/TouchController'"
-  "-framework touchcontroller_proxy"
+  "-Wl,-force_load,${CMAKE_CURRENT_LIST_DIR}/external/TouchController/touchcontroller_proxy.framework/touchcontroller_proxy"
   "-weak_framework SafariServices"
 )
 set_target_properties(AngelAuraAmethyst PROPERTIES

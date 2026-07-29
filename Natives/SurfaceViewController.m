@@ -105,7 +105,7 @@ static GameSurfaceView* pojavWindow;
     }
     [displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSRunLoopCommonModes];
 
-    [TouchControllerUtils initialize];
+    [TouchControllerUtils setup];
 
     CGFloat screenScale = UIScreen.mainScreen.scale;
 

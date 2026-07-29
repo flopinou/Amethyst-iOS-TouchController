@@ -49,7 +49,7 @@ static void sendClearPointer(void) {
 
 @implementation TouchControllerUtils
 
-+ (void)initialize {
++ (void)setup {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         tc_send = touchcontroller_ios_send;
