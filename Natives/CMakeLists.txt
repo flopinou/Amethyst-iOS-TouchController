@@ -27,7 +27,6 @@ include_directories(
   "external/ballpa1n"
   "external/ballpa1n/wrapped"
   "external/mach"
-  "external/TouchController/touchcontroller_proxy.framework/Headers"
 )
 
 # For cacio support library
@@ -203,8 +202,6 @@ target_link_libraries(AngelAuraAmethyst
   "-framework UniformTypeIdentifiers"
   "-framework UnzipKit"
   "-framework WebKit"
-  "-F'${CMAKE_CURRENT_LIST_DIR}/external/TouchController'"
-  "-Wl,-force_load,${CMAKE_CURRENT_LIST_DIR}/external/TouchController/touchcontroller_proxy.framework/touchcontroller_proxy"
   "-weak_framework SafariServices"
 )
 set_target_properties(AngelAuraAmethyst PROPERTIES
