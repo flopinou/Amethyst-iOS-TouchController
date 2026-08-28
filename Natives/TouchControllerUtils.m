@@ -1,5 +1,4 @@
 #import "TouchControllerUtils.h"
-
 #include <arpa/inet.h>
 #include <dlfcn.h>
 #include <stdint.h>
@@ -7,6 +6,8 @@
 
 typedef int (*tc_ios_send_func)(const void* buf, int len);
 static tc_ios_send_func tc_send = NULL;
+
+extern int touchcontroller_ios_send(const void* buf, int len);
 
 static NSMapTable<UITouch *, NSNumber *> *pointerIdMap = nil;
 static int nextPointerId = 1;
@@ -47,10 +48,13 @@ static void sendClearPointer(void) {
 
 @implementation TouchControllerUtils
 
-+ (void)setup {
++ (void)initialize {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        tc_send = (tc_ios_send_func)dlsym(RTLD_DEFAULT, "touchcontroller_ios_send");
+        tc_send = touchcontroller_ios_send;
+        if (!tc_send) {
+            tc_send = (tc_ios_send_func)dlsym(RTLD_DEFAULT, "touchcontroller_ios_send");
+        }
 
         pointerIdMap = [NSMapTable strongToStrongObjectsMapTable];
         nextPointerId = 1;
@@ -64,8 +68,9 @@ static void sendClearPointer(void) {
 + (void)processTouchesBegan:(NSSet<UITouch *> *)touches inView:(UIView *)view {
     if (!tc_send) return;
 
-    CGFloat viewWidth  = view.bounds.size.width;
+    CGFloat viewWidth = view.bounds.size.width;
     CGFloat viewHeight = view.bounds.size.height;
+
     if (viewWidth <= 0 || viewHeight <= 0) return;
 
     for (UITouch *touch in touches) {
@@ -85,8 +90,9 @@ static void sendClearPointer(void) {
 + (void)processTouchesMoved:(NSSet<UITouch *> *)touches inView:(UIView *)view {
     if (!tc_send) return;
 
-    CGFloat viewWidth  = view.bounds.size.width;
+    CGFloat viewWidth = view.bounds.size.width;
     CGFloat viewHeight = view.bounds.size.height;
+
     if (viewWidth <= 0 || viewHeight <= 0) return;
 
     for (UITouch *touch in touches) {
@@ -109,18 +115,20 @@ static void sendClearPointer(void) {
     if (!tc_send) return;
 
     NSUInteger trackedEndingCount = 0;
+
     for (UITouch *touch in touches) {
         if ([pointerIdMap objectForKey:touch]) {
             trackedEndingCount++;
         }
     }
 
-    BOOL allTouchesEnding = (trackedEndingCount >= pointerIdMap.count) && (pointerIdMap.count > 0);
+    BOOL allTouchesEnding =
+        (trackedEndingCount >= pointerIdMap.count) &&
+        (pointerIdMap.count > 0);
 
     if (allTouchesEnding) {
         sendClearPointer();
         [pointerIdMap removeAllObjects];
-        nextPointerId = 1;
     } else {
         for (UITouch *touch in touches) {
             NSNumber *pidNum = [pointerIdMap objectForKey:touch];
@@ -137,8 +145,6 @@ static void sendClearPointer(void) {
 
     sendClearPointer();
     [pointerIdMap removeAllObjects];
-    nextPointerId = 1;
 }
 
 @end
-
