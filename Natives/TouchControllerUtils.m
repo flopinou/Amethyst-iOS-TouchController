@@ -7,8 +7,6 @@
 typedef int (*tc_ios_send_func)(const void* buf, int len);
 static tc_ios_send_func tc_send = NULL;
 
-extern int touchcontroller_ios_send(const void* buf, int len);
-
 static NSMapTable<UITouch *, NSNumber *> *pointerIdMap = nil;
 static int nextPointerId = 1;
 
@@ -48,14 +46,10 @@ static void sendClearPointer(void) {
 
 @implementation TouchControllerUtils
 
-+ (void)initialize {
++ (void)setup {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        tc_send = touchcontroller_ios_send;
-        if (!tc_send) {
-            tc_send = (tc_ios_send_func)dlsym(RTLD_DEFAULT, "touchcontroller_ios_send");
-        }
-
+        tc_send = (tc_ios_send_func)dlsym(RTLD_DEFAULT, "touchcontroller_ios_send");
         pointerIdMap = [NSMapTable strongToStrongObjectsMapTable];
         nextPointerId = 1;
     });
